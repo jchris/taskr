@@ -35,6 +35,7 @@
           var args = $.makeArray(arguments);
           args.shift();
           target.trigger(e, args);
+          return false;
         });
       });
     },
@@ -72,6 +73,7 @@
     if (typeof h == "string") {
       elem.bind(name, function() {
         $(this).trigger(h, arguments);
+        return false;
       });
     } else if (typeof h == "function") {
       elem.bind(name, h);
@@ -172,53 +174,14 @@
     }
   }
   
-  // function changesQuery(me, app, c, args) {
-  //   $.log("setup changesQuery")
-  //   var q = runIfFun(me, c.query, args);
-  //   var viewName = q.view;
-  //   delete q.view;
-  //   var userSuccess = q.success;
-  //   delete q.success;
-  //   q.success = function(resp) {
-  //     $.log("changesQuery success", resp)
-  //     if (c.mustache) {
-  // 
-  //     }
-  //     userSuccess && userSuccess(resp);
-  //   };
-  //   // todo: scope this to a db
-  //   // $("body").bind("evently.changes", function() {
-  //   //   // todo we can use the view to filter changes
-  //   //   newRows(app, viewName, q);
-  //   //   // todo delete other bindings?
-  //   //   // todo make this a single callback per widget
-  //   // });
-  //   newRows(app, viewName, q);
-  // }  
-
-  // function setupChanges(me, app, handler, args) {
-  //   $.log("setupChanges", handler)
-  //   // handler has fields:
-  //   // render, query, template, data
-  //   var c = runIfFun(me, handler.changes, args);
-  //   if (c.type == "newRows") {
-  //     // todo the initial setup might want to run slightly differently (use path info)
-  //     changesQuery(me, app, c, args)
-  //   } else if (c.type == "document") {
-  //     changesDoc(me, app, c, args)
-  //   } else {
-  //     // just the raw change row
-  //     changesRaw(me, app, c, args)
-  //   }
-  // };
-  
   // this is for the items handler
   var lastViewId, highKey, inFlight;
   function newRows(app, view, opts) {
-    // $.log(["newRows", arguments])
+    $.log("newRows", arguments);
     // on success we'll set the top key
     var thisViewId, successCallback = opts.success, full = false;
     function successFun(resp) {
+      $("newRows success", resp)
       inFlight = false;
       resp.rows = resp.rows.filter(function(r) {
         return r.key != highKey;
@@ -249,17 +212,17 @@
       } else {
         opts.startkey = highKey;
       }
-      // $.log("more view stuff")
+      $.log("add view rows")
       if (!inFlight) {
         inFlight = true;
         app.view(view, opts);
       }
     } else {
       // full refresh
-      // $.log("new view stuff")
+      $.log("new view stuff")
       full = true;
       lastViewId = thisViewId;
-      highKey = null;
+      highKey = undefined;
       inFlight = true;
       app.view(view, opts);
     }

@@ -25,7 +25,8 @@ $.couch.app(function(app) {
             $(this).trigger("do"+action, [name, pass]);
             return false;
           }]
-        }
+        },
+        "a[href=#back]" : {click : ["loggedOut"]}
       },
       after : function() {
         $("input[name=name]", this).focus();
