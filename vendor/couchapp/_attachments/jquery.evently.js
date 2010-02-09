@@ -184,7 +184,7 @@
       $("newRows success", resp)
       inFlight = false;
       resp.rows = resp.rows.filter(function(r) {
-        return r.key != highKey;
+        return JSON.stringify(r.key) != JSON.stringify(highKey);
       });
       if (resp.rows.length > 0) {
         if (opts.descending) {
@@ -212,7 +212,7 @@
       } else {
         opts.startkey = highKey;
       }
-      $.log("add view rows")
+      $.log("add view rows", opts)
       if (!inFlight) {
         inFlight = true;
         app.view(view, opts);
