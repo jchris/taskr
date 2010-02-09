@@ -2,9 +2,9 @@ $.log = function() {
   // console.log(arguments);
 };
 $.couch.app(function(app) {
-  
+
   function tasksHandler(path, query) {
-    // this is a kind of changes feed handler 
+    // this is a kind of changes feed handler
     // that works with at the row level
     // with views where the new changes we care about
     // will always appear at one end
@@ -16,14 +16,14 @@ $.couch.app(function(app) {
       path : path,
       mustache : app.ddoc.templates.tasks,
       selectors : function(e, params) {
-        
+
         var task_changes = {
           mustache : app.ddoc.templates.task,
           render : "prepend",
           // we want this query to be set during the event
           // that triggered the parent to be created,
           // not rebuilt each time based on changes as they come in
-          query : query(e, params), 
+          query : query(e, params),
           data : function(r) {
             // $.log("task data", arguments);
             var v = r.value;
@@ -64,7 +64,7 @@ $.couch.app(function(app) {
               click : function() {
                 var li = $(this).parents("li");
                 $("div.reply",li).evently(reply);
-                return false;            
+                return false;
               }
             }
           }
@@ -74,7 +74,7 @@ $.couch.app(function(app) {
           ul : {
             _changes : task_changes
           }
-        } 
+        }
       }
     };
   }
@@ -82,7 +82,7 @@ $.couch.app(function(app) {
   var tasks = {
     recent : tasksHandler("/", function(e, params) {
       return {
-        view : "recent-tasks", 
+        view : "recent-tasks",
         limit : 25,
         descending : true,
         type : "newRows"
@@ -125,7 +125,7 @@ $.couch.app(function(app) {
 
   $("#tasks").evently(tasks, app);
   $.pathbinder.begin("/");
-  
+
   var reply = {
     _init: {
       mustache : app.ddoc.templates.create_reply,
@@ -147,14 +147,14 @@ $.couch.app(function(app) {
               success : function() {
                 texta.val('');
               }
-            });            
+            });
             return false;
           }
         }
       }
     }
   };
-  
+
   var replies = {
     _init: {
       mustache : app.ddoc.templates.replies,
@@ -172,8 +172,8 @@ $.couch.app(function(app) {
             }
           })
         }
-      } 
+      }
     }
   };
-  
+
 });
