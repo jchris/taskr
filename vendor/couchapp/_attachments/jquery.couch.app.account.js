@@ -37,7 +37,7 @@ $.couch.app(function(app) {
   // The evently widget is defined as a (mostly) declarative structure. See 
   // the Toast app's index.html for an example of how to override an evently
   // handler.
-  $.couch.app = $.couch.app || {};
+
   $.couch.app.account = {
     _init: "refresh",
     loggedOut : {
