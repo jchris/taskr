@@ -2,8 +2,8 @@
 // then calls our application.
 $.couch.app(function(app) {
   
-  $("#tagcloud").evently(tagcloud, app);
-  
+  // tagcloud is an evently widget that displays a tag cloud of the top tags
+  // the tag cloud is updated when the underlying data changes
   var tagcloud = {
     _changes : {
       query : {
@@ -12,7 +12,7 @@ $.couch.app(function(app) {
       },
       mustache : app.ddoc.templates.tag_cloud,
       data : function(resp) {
-        // $.log("tagcloud data", arguments)
+        $.log("tagcloud data", arguments)
         var tags = resp.rows.map(function(r) {
           return {
             tag : r.key,
@@ -25,6 +25,9 @@ $.couch.app(function(app) {
       }
     }
   };
+  $("#tagcloud").evently(tagcloud, app);
+  // $.log(app.ddoc.evently.tagcloud)
+  // $("#tagcloud").evently(app.ddoc.evently.tagcloud, app);
   
   var usercloud = {
     _changes : {
@@ -45,7 +48,6 @@ $.couch.app(function(app) {
       }
     }
   };
-  
   $("#usercloud").evently(usercloud, app);
 
   // customize the profile widget with our templates and selectors

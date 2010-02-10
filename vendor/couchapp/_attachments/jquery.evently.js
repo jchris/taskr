@@ -23,6 +23,10 @@
     // if the field is a function, call it, bound to the widget
     if (typeof fun == "function") {
       return fun.apply(me, args);
+    } else if (fun && fun.match && fun.match(/function/)) {
+      $.log("evil", fun);
+      fun = new Function(fun);
+      return fun.apply(me, args);
     } else {
       return fun;
     }
@@ -71,10 +75,17 @@
       elem.pathbinder(name, h.path);
     }
     if (typeof h == "string") {
-      elem.bind(name, function() {
-        $(this).trigger(h, arguments);
-        return false;
-      });
+      $.log(h);
+      if (h.match(/function/)) {
+        $.log("eval", h)
+        var fun = new Function(h);
+        elem.bind(name, fun);
+      } else {
+        elem.bind(name, function() {
+          $(this).trigger(h, arguments);
+          return false;
+        });
+      }
     } else if (typeof h == "function") {
       elem.bind(name, h);
     } else if ($.isArray(h)) { 
