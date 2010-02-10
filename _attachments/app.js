@@ -2,53 +2,13 @@
 // then calls our application.
 $.couch.app(function(app) {
   
-  // tagcloud is an evently widget that displays a tag cloud of the top tags
-  // the tag cloud is updated when the underlying data changes
-  var tagcloud = {
-    _changes : {
-      query : {
-        view : "tag-cloud",
-        group_level : 1,
-      },
-      mustache : app.ddoc.templates.tag_cloud,
-      data : function(resp) {
-        $.log("tagcloud data", arguments)
-        var tags = resp.rows.map(function(r) {
-          return {
-            tag : r.key,
-            // todo use a new mustache delimiter for this
-            tag_uri : encodeURIComponent(r.key),
-            count : r.value * 10
-          }
-        });
-        return {tags:tags};
-      }
-    }
-  };
-  $("#tagcloud").evently(tagcloud, app);
-  // $.log(app.ddoc.evently.tagcloud)
-  // $("#tagcloud").evently(app.ddoc.evently.tagcloud, app);
+  // An evently widget that displays a tag cloud which is updated when 
+  // the underlying data changes. The code for this widget is stored 
+  // in the evently/tagcloud directory.
+  $("#tagcloud").evently(app.ddoc.evently.tagcloud, app);
   
-  var usercloud = {
-    _changes : {
-      query : {
-        view : "user-cloud",
-        group_level : 1,
-      },
-      mustache : app.ddoc.templates.user_cloud,
-      data : function(resp) {
-        var users = resp.rows.map(function(r) {
-          return {
-            user : r.key,
-            user_uri : encodeURIComponent(r.key),
-            count : r.value * 10
-          }
-        });
-        return {users:users};
-      }
-    }
-  };
-  $("#usercloud").evently(usercloud, app);
+  // this is the same thing, but for a cloud of usernames
+  $("#usercloud").evently(app.ddoc.evently.usercloud, app);
 
   // customize the profile widget with our templates and selectors
   $.couch.app.profile.loggedOut.mustache = app.ddoc.templates.logged_out;

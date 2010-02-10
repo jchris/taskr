@@ -25,8 +25,8 @@
       return fun.apply(me, args);
     } else if (fun && fun.match && fun.match(/function/)) {
       $.log("evil", fun);
-      fun = new Function(fun);
-      return fun.apply(me, args);
+      eval("var f = "+fun);
+      return f.apply(me, args);
     } else {
       return fun;
     }
