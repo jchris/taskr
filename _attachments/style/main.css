@@ -78,6 +78,7 @@ div#profile {
 
 #tasks li.done, #tasks li.done:hover {
   background-color:#cfb;
+  border: 1px solid #4b4;
 }
 
 #tasks li .body {
