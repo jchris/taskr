@@ -1,56 +1,9 @@
+// $.couch.app() loads the design document from the server and 
+// then calls our application.
 $.couch.app(function(app) {
-  var since_seq = 0;
-  var userProfile;
-  // todo, use the templates ddoc object for this.
   
-  $.couch.app.profile.loggedOut.mustache = app.ddoc.templates.logged_out;
+  $("#tagcloud").evently(tagcloud, app);
   
-  $.couch.app.profile.profileReady.mustache = app.ddoc.templates.create_task;
-
-  $.couch.app.profile.profileReady.selectors = {
-    form : {
-      submit : function() {
-        var texta = $("textarea[name=body]", this);
-        var newTask = {
-          body : texta.val(),
-          type : "task",
-          created_at : new Date(),
-          authorProfile : userProfile
-        };
-        app.db.saveDoc(newTask, {
-          success : function() {
-            texta.val('');
-          }
-        });
-        return false;
-      }
-    }
-  };
-
-  $.couch.app.profile.profileReady.after = function(e, profile) {
-    // userProfile is in the outer closure
-    userProfile = profile;
-  };
-  
-  $("#profile").evently($.couch.app.profile);
-  
-  // link the widgets
-  $.evently.connect($("#account"), $("#profile"), ["loggedIn", "loggedOut"]);
-  
-  // setup the account widget
-  $("#account").evently($.couch.app.account);
-  // 
-  // todo move to a plugin somewhere
-  $.linkify = function(body) {
-    return body.replace(/((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)/gi,function(a) {
-      return '<a target="_blank" href="'+a+'">'+a+'</a>';
-    }).replace(/\@([\w\-]+)/g,function(user,name) {
-      return '<a href="#/mentions/'+encodeURIComponent(name)+'">'+user+'</a>';
-    }).replace(/\#([\w\-\.]+)/g,function(word,tag) {
-      return '<a href="#/tags/'+encodeURIComponent(tag)+'">'+word+'</a>';
-    });
-  };
-
   var tagcloud = {
     _changes : {
       query : {
@@ -93,7 +46,44 @@ $.couch.app(function(app) {
     }
   };
   
-  $("#tagcloud").evently(tagcloud, app);
   $("#usercloud").evently(usercloud, app);
+
+  // customize the profile widget with our templates and selectors
+  $.couch.app.profile.loggedOut.mustache = app.ddoc.templates.logged_out;
+  $.couch.app.profile.profileReady.mustache = app.ddoc.templates.create_task;
+
+  var userProfile;
+  $.couch.app.profile.profileReady.after = function(e, profile) {
+    userProfile = profile; // store for later
+  };
+  
+  $.couch.app.profile.profileReady.selectors = {
+    "form" : {
+      // users with profiles can create tasks.
+      submit : function() {
+        var texta = $("textarea[name=body]", this);
+        var newTask = {
+          body : texta.val(),
+          type : "task",
+          created_at : new Date(),
+          authorProfile : userProfile
+        };
+        app.db.saveDoc(newTask, {
+          success : function() {
+            texta.val('');
+          }
+        });
+        return false;
+      }
+    }
+  };
+
+  // apply the customized profile evently widget to the page
+  $("#profile").evently($.couch.app.profile);
+  // setup the account widget
+  $("#account").evently($.couch.app.account);
+  
+  // trigger the profile widget's events corresponding to the account widget
+  $.evently.connect($("#account"), $("#profile"), ["loggedIn", "loggedOut"]);
 
 });
