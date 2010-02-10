@@ -1,7 +1,7 @@
 // $.couch.app() loads the design document from the server and 
 // then calls our application.
 $.couch.app(function(app) {
-  console.log(app.ddoc);
+  // console.log(app.ddoc);
   
   // An evently widget that displays a tag cloud which is updated when 
   // the underlying data changes. The code for this widget is stored 
