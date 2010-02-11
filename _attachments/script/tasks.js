@@ -1,5 +1,8 @@
 $.couch.app(function(app) {
 
+  $("#tasks").evently(app.ddoc.evently.tasks, app);
+  $.pathbinder.begin("/");
+
   function tasksHandler(path, query) {
     // this is a kind of changes feed handler
     // that works with at the row level
@@ -121,8 +124,9 @@ $.couch.app(function(app) {
     })
   };
 
-  $("#tasks").evently(tasks, app);
-  $.pathbinder.begin("/");
+  // $("#tasks").evently(tasks, app);
+  // $.pathbinder.begin("/");
+
 
   var reply = {
     _init: {

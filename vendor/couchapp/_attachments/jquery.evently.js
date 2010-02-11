@@ -7,6 +7,17 @@
 //   return $.cache[id];
 // };
 
+function $$(node) {
+  var data = $(node).data("$$");
+  if (data) {
+    return data;
+  } else {
+    data = {};
+    $(node).data("$$", data);
+    return data;
+  }
+};
+
 (function($) {
   // utility functions used in the implementation
   

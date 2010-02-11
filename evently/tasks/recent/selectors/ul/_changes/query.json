@@ -1,0 +1,6 @@
+{
+  "view" : "recent-tasks",
+  "limit" : 25,
+  "descending" : true,
+  "type" : "newRows"
+}
