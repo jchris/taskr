@@ -1,14 +1,14 @@
+// thanks @wycats: http://yehudakatz.com/2009/04/20/evented-programming-with-jquery/
+// var $$ = function(param) {
+//   var node = $(param)[0];
+//   var id = $.data(node);
+//   $.cache[id] = $.cache[id] || {};
+//   $.cache[id].node = node;
+//   return $.cache[id];
+// };
+
 (function($) {
   // utility functions used in the implementation
-
-  // thanks @wycats: http://yehudakatz.com/2009/04/20/evented-programming-with-jquery/
-  var $$ = function(param) {
-    var node = $(param)[0];
-    var id = $.data(node);
-    $.cache[id] = $.cache[id] || {};
-    $.cache[id].node = node;
-    return $.cache[id];
-  };
   
   function forIn(obj, fun) {
     var name;
@@ -23,7 +23,14 @@
     if (fun && fun.match && fun.match(/function/)) {
       eval("var f = "+fun);
       if (typeof f == "function") {
-        return f;        
+        return function() {
+          try {
+            return f.apply(this, arguments)
+          } catch(e) {
+            $.log({"message": "Error in evently function.", "error": e, "src" : fun});
+            throw(e)
+          }
+        }
       }
     }
     return fun;
@@ -56,7 +63,8 @@
   
   $.fn.evently = function(events, app, init_args) {
     var elem = $(this);
-
+    // store the app on the element for later use
+    elem.data("app", app);
     // setup the handlers onto elem
     forIn(events, function(name, h) {
       eventlyHandler(elem, app, name, h);

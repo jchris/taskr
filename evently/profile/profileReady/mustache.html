@@ -1,5 +1,5 @@
 <div class="avatar">
-  <img src="{{{avatar_url}}}">
+  {{#avatar_url}}<img src="{{{avatar_url}}}"/>{{/avatar_url}}
   <div class="name">
     {{nickname}}
   </div>
@@ -9,6 +9,4 @@
   <br>
   <input type="submit" value="New Task →">
 </form>
-<p>
-  <br class="clear">
-</p>
+<br class="clear">

@@ -6,17 +6,18 @@ $.couch.app(function(app) {
   function profileDocId(userCtx) {
     return "couch.app.profile:"+userCtx.name;
   };
-  var userCtx; // we save this state in a closure when it's available
+  // var userCtx; // we save this state in a closure when it's available
+  // todo stop using userCtx from the closure
   $.couch.app.profile = {
     loggedIn : function(e, r) {
-      userCtx = r.userCtx;
+      var userCtx = r.userCtx;
       var proid = profileDocId(userCtx), widget = $(this);
       app.db.openDoc(proid, {
         success : function(doc) {
           widget.trigger("profileReady", [doc]);
         },
         error : function() {
-          widget.trigger("noProfile");
+          widget.trigger("noProfile", [userCtx]);
         }
       });
     },
@@ -35,7 +36,7 @@ $.couch.app(function(app) {
     },
     noProfile : {
       mustache : t.no_profile,
-      data : function() {
+      data : function(e, userCtx) {
         return userCtx;
       },
       selectors : {

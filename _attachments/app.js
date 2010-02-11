@@ -11,45 +11,21 @@ $.couch.app(function(app) {
   // this is the same thing, but for a cloud of usernames
   $("#usercloud").evently(app.ddoc.evently.usercloud, app);
 
-  // customize the profile widget with our templates and selectors
-  $.couch.app.profile.loggedOut.mustache = app.ddoc.templates.logged_out;
-  $.couch.app.profile.profileReady.mustache = app.ddoc.templates.create_task;
-
-  var userProfile;
-  $.couch.app.profile.profileReady.after = function(e, profile) {
-    userProfile = profile; // store for later
-  };
+  // customize the couchapp profile widget with our templates and selectors
+  $.extend(true, 
+    app.ddoc.vendor.couchapp.evently.profile, 
+    app.ddoc.evently.profile);
   
-  $.couch.app.profile.profileReady.selectors = {
-    "form" : {
-      // users with profiles can create tasks.
-      submit : function() {
-        var texta = $("textarea[name=body]", this);
-        var newTask = {
-          body : texta.val(),
-          type : "task",
-          created_at : new Date(),
-          authorProfile : userProfile
-        };
-        app.db.saveDoc(newTask, {
-          success : function() {
-            texta.val('');
-          }
-        });
-        return false;
-      }
-    }
-  };
-
-  // apply the customized profile evently widget to the page
-  $("#profile").evently($.couch.app.profile);
+  // apply the widget to the dom
+  $("#profile").evently(app.ddoc.vendor.couchapp.evently.profile, app);
+  
   // setup the account widget
-  // $("#account").evently($.couch.app.account);
-  $("#account").evently(app.ddoc.vendor.couchapp.evently.account);
-  
-  
+  $("#account").evently(app.ddoc.vendor.couchapp.evently.account, app);  
   
   // trigger the profile widget's events corresponding to the account widget
   $.evently.connect($("#account"), $("#profile"), ["loggedIn", "loggedOut"]);
-
 });
+
+$.log = function() {
+  // console.log(arguments);
+};
