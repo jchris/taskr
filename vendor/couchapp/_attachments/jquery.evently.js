@@ -18,14 +18,21 @@
       }
     }
   };
+
+  function funViaString(fun) {
+    if (fun && fun.match && fun.match(/function/)) {
+      eval("var f = "+fun);
+      if (typeof f == "function") {
+        return f;        
+      }
+    }
+    return fun;
+  };
   
   function runIfFun(me, fun, args) {
     // if the field is a function, call it, bound to the widget
-    if (typeof fun == "function") {
-      return fun.apply(me, args);
-    } else if (fun && fun.match && fun.match(/function/)) {
-      $.log("evil", fun);
-      eval("var f = "+fun);
+    var f = funViaString(fun);
+    if (typeof f == "function") {
       return f.apply(me, args);
     } else {
       return fun;
@@ -74,20 +81,14 @@
     if (h.path) {
       elem.pathbinder(name, h.path);
     }
-    if (typeof h == "string") {
-      $.log(h);
-      if (h.match(/function/)) {
-        $.log("eval", h)
-        var fun = new Function(h);
-        elem.bind(name, fun);
-      } else {
-        elem.bind(name, function() {
-          $(this).trigger(h, arguments);
-          return false;
-        });
-      }
-    } else if (typeof h == "function") {
-      elem.bind(name, h);
+    var f = funViaString(h);
+    if (typeof f == "function") {
+      elem.bind(name, f); 
+    } else if (typeof f == "string") {
+      elem.bind(name, function() {
+        $(this).trigger(f, arguments);
+        return false;
+      });
     } else if ($.isArray(h)) { 
       // handle arrays recursively
       for (var i=0; i < h.length; i++) {
@@ -96,7 +97,7 @@
     } else {
       // an object is using the evently / mustache template system
       if (h.fun) {
-        elem.bind(name, h.fun);
+        elem.bind(name, funViaString(h.fun));
       }
       // templates, selectors, etc are intepreted
       // when our named event is triggered.
@@ -140,7 +141,7 @@
         });
       }
       if (h.after) {
-        h.after.apply(me, args);
+        funViaString(h.after).apply(me, args);
       }
     }    
   };

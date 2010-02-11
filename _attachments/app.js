@@ -44,7 +44,10 @@ $.couch.app(function(app) {
   // apply the customized profile evently widget to the page
   $("#profile").evently($.couch.app.profile);
   // setup the account widget
-  $("#account").evently($.couch.app.account);
+  // $("#account").evently($.couch.app.account);
+  $("#account").evently(app.ddoc.vendor.couchapp.evently.account);
+  
+  
   
   // trigger the profile widget's events corresponding to the account widget
   $.evently.connect($("#account"), $("#profile"), ["loggedIn", "loggedOut"]);

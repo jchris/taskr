@@ -6,6 +6,8 @@
 //   $("#userCtx").evently($.couch.app.account);
 //   $("#userCtx").trigger("refresh");
 // 
+// 
+// this file is deprecated, please use the new evently style.
 $.couch.app(function(app) {
   var t = app.ddoc.vendor.couchapp.templates.account;
   
