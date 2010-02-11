@@ -76,10 +76,10 @@ function $$(node) {
     var elem = $(this);
     // store the app on the element for later use
     $$(elem).app = app;
-    // elem.data("app", app);
+
     // setup the handlers onto elem
     forIn(events, function(name, h) {
-      eventlyHandler(elem, app, name, h);
+      eventlyHandler(elem, name, h);
     });
     
     if (events._init) {
@@ -97,7 +97,7 @@ function $$(node) {
   
   // eventlyHandler applies the user's handler (h) to the 
   // elem, bound to trigger based on name.
-  function eventlyHandler(elem, app, name, h) {
+  function eventlyHandler(elem, name, h) {
     if (h.path) {
       elem.pathbinder(name, h.path);
     }
@@ -112,7 +112,7 @@ function $$(node) {
     } else if ($.isArray(h)) { 
       // handle arrays recursively
       for (var i=0; i < h.length; i++) {
-        eventlyHandler(elem, app, name, h[i]);
+        eventlyHandler(elem, name, h[i]);
       };
     } else {
       // an object is using the evently / mustache template system
@@ -122,8 +122,7 @@ function $$(node) {
       // templates, selectors, etc are intepreted
       // when our named event is triggered.
       elem.bind(name, function() {
-        var me = $(this);
-        renderElement(me, app, h, arguments);
+        renderElement($(this), h, arguments);
       });
     }
   };
@@ -137,13 +136,13 @@ function $$(node) {
   // as well as call this in a way that replaces the host elements content
   // this would be easy if there is a simple way to get at the element we just appended
   // (as html) so that we can attache the selectors
-  function renderElement(me, app, h, args, qrun) {
+  function renderElement(me, h, args, qrun) {
     
     // if there's a query object we run the query,
     // and then call the data function with the response.
     if (h.query && !qrun) {
       // $.log("query before renderElement", arguments)
-      runQuery(me, app, h, args)
+      runQuery(me, h, args)
     } else {
       // $.log("renderElement")
       // $.log(me, h, args, qrun)
@@ -156,6 +155,7 @@ function $$(node) {
       }
       var selectors = runIfFun(me, h.selectors, args);
       if (selectors) {
+        var app = $$(me).app;
         forIn(selectors, function(selector, handlers) {
           $(selector, me).evently(handlers, app, args);
         });
@@ -174,8 +174,9 @@ function $$(node) {
       runIfFun(me, h.partials, args)));
   };
   
-  function runQuery(me, app, h, args) {
+  function runQuery(me, h, args) {
     // $.log("runQuery: args", args)
+    var app = $$(me).app;
     var qu = runIfFun(me, h.query, args);
     var qType = qu.type;
     var viewName = qu.view;
@@ -191,7 +192,7 @@ function $$(node) {
       q.success = function(resp) {
         $.log("runQuery newRows success", resp)
         resp.rows.reverse().forEach(function(row) {
-          renderElement(me, app, h, [row], true)
+          renderElement(me, h, [row], true)
         });
         userSuccess && userSuccess(resp);
       };
@@ -199,7 +200,7 @@ function $$(node) {
     } else {
       q.success = function(resp) {
         // $.log("runQuery success", resp)
-        renderElement(me, app, h, [resp], true);
+        renderElement(me, h, [resp], true);
         userSuccess && userSuccess(resp);
       };
       app.view(viewName, q);      
