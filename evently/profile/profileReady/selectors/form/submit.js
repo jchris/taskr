@@ -1,5 +1,5 @@
 function() {
-  var profile = $(this).parents("#profile").data("profile");
+  var profile = $$($(this).parents("#profile")).profile;
   // $.log("profile", profile, this);
   var texta = $("textarea[name=body]", this);
   var newTask = {
@@ -10,7 +10,7 @@ function() {
   };
   // works because app is attached all the way down
   // maybe we need a better way to support shared state?
-  $(this).data("app").db.saveDoc(newTask, {
+  $$(this).app.db.saveDoc(newTask, {
     success : function() {
       texta.val('');
     }

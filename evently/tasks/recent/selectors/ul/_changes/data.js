@@ -1,6 +1,6 @@
 function(r) {
-  // $.log("task data", arguments);
   var v = r.value;
+  var app = $$(this).app;
   return {
     avatar_url : v.authorProfile && v.authorProfile.gravatar_url,
     body : $.linkify($.mustache.escape(r.value.body)),

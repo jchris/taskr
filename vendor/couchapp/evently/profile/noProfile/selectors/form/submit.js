@@ -21,9 +21,9 @@ function() {
 
   newProfile.gravatar_url = 'http://www.gravatar.com/avatar/'+hex_md5(newProfile.email || newProfile.rand)+'.jpg?s=40&d=identicon';
 
-  widget.data("app").db.saveDoc(newProfile, {
+  $$(widget).app.db.saveDoc(newProfile, {
     success : function() {
-      app.db.openDoc(proid, {
+      $$(widget).app.db.openDoc(proid, {
         success : function(doc) {
           widget.trigger("profileReady", [doc]);
         }

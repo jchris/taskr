@@ -1,7 +1,39 @@
 $.couch.app(function(app) {
 
-  $("#tasks").evently(app.ddoc.evently.tasks, app);
+
+  
+  // now we need to do magic to make more kinds of task displays
+  // recent tags mentions users
+  var tasks = app.ddoc.evently.tasks;
+  
+  tasks.tags = $.extend(true, {}, tasks.recent, {
+    path : "/tags/:tag",
+    selectors : {
+      ul : {
+        _changes : {
+          query : function() {
+            $.log("tags query")
+            $.log(arguments)
+            return {
+              view : "tag-cloud",
+              limit : 25,
+              // startkey : [params.tag, {}],
+              // endkey : [params.tag],
+              reduce : false,
+              descending : true,
+              type : "newRows"
+            }
+          }
+        }
+      }
+    }
+  });
+  
+  // $.log(tasks)
+  $("#tasks").evently(tasks, app);
   $.pathbinder.begin("/");
+  
+return;
 
   function tasksHandler(path, query) {
     // this is a kind of changes feed handler
@@ -176,18 +208,6 @@ $.couch.app(function(app) {
         }
       }
     }
-  };
-
-  // todo move to a plugin somewhere
-  // copied to toast's $.couch.app.utils
-  $.linkify = function(body) {
-    return body.replace(/((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)/gi,function(a) {
-      return '<a target="_blank" href="'+a+'">'+a+'</a>';
-    }).replace(/\@([\w\-]+)/g,function(user,name) {
-      return '<a href="#/mentions/'+encodeURIComponent(name)+'">'+user+'</a>';
-    }).replace(/\#([\w\-\.]+)/g,function(word,tag) {
-      return '<a href="#/tags/'+encodeURIComponent(tag)+'">'+word+'</a>';
-    });
   };
 
 });

@@ -38,7 +38,7 @@ function $$(node) {
           try {
             return f.apply(this, arguments)
           } catch(e) {
-            $.log({"message": "Error in evently function.", "error": e, "src" : fun});
+            // $.log({"message": "Error in evently function.", "error": e, "src" : fun});
             throw(e)
           }
         }
@@ -75,7 +75,8 @@ function $$(node) {
   $.fn.evently = function(events, app, init_args) {
     var elem = $(this);
     // store the app on the element for later use
-    elem.data("app", app);
+    $$(elem).app = app;
+    // elem.data("app", app);
     // setup the handlers onto elem
     forIn(events, function(name, h) {
       eventlyHandler(elem, app, name, h);
@@ -145,7 +146,7 @@ function $$(node) {
       runQuery(me, app, h, args)
     } else {
       // $.log("renderElement")
-      // $.log(h, args, qrun)
+      // $.log(me, h, args, qrun)
       // otherwise we just render the template with the current args
       if (h.mustache) {
         var newElem = mustachioed(me, h, args);
@@ -188,7 +189,7 @@ function $$(node) {
     
     if (qType == "newRows") {
       q.success = function(resp) {
-        // $.log("runQuery newRows success", resp)
+        $.log("runQuery newRows success", resp)
         resp.rows.reverse().forEach(function(row) {
           renderElement(me, app, h, [row], true)
         });
@@ -208,11 +209,11 @@ function $$(node) {
   // this is for the items handler
   var lastViewId, highKey, inFlight;
   function newRows(app, view, opts) {
-    $.log("newRows", arguments);
+    // $.log("newRows", arguments);
     // on success we'll set the top key
     var thisViewId, successCallback = opts.success, full = false;
     function successFun(resp) {
-      $("newRows success", resp)
+      // $.log("newRows success", resp)
       inFlight = false;
       resp.rows = resp.rows.filter(function(r) {
         return JSON.stringify(r.key) != JSON.stringify(highKey);
@@ -243,14 +244,14 @@ function $$(node) {
       } else {
         opts.startkey = highKey;
       }
-      $.log("add view rows", opts)
+      // $.log("add view rows", opts)
       if (!inFlight) {
         inFlight = true;
         app.view(view, opts);
       }
     } else {
       // full refresh
-      $.log("new view stuff")
+      // $.log("new view stuff")
       full = true;
       lastViewId = thisViewId;
       highKey = undefined;

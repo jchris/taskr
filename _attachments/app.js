@@ -27,5 +27,17 @@ $.couch.app(function(app) {
 });
 
 $.log = function() {
-  // console.log(arguments);
+  console.log(arguments);
+};
+
+// todo move to a plugin somewhere
+// copied to toast's $.couch.app.utils
+$.linkify = function(body) {
+  return body.replace(/((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)/gi,function(a) {
+    return '<a target="_blank" href="'+a+'">'+a+'</a>';
+  }).replace(/\@([\w\-]+)/g,function(user,name) {
+    return '<a href="#/mentions/'+encodeURIComponent(name)+'">'+user+'</a>';
+  }).replace(/\#([\w\-\.]+)/g,function(word,tag) {
+    return '<a href="#/tags/'+encodeURIComponent(tag)+'">'+word+'</a>';
+  });
 };

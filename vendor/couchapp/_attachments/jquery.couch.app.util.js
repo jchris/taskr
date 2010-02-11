@@ -1,3 +1,4 @@
+// todo remove this crap
 function escapeHTML(st) {                                       
   return(                                                                 
     st && st.replace(/&/g,'&amp;').                                         

@@ -1,6 +1,7 @@
 function() {
   var li = $(this).parents("li");
   var task_id = li.attr("data-id");
+  var app = $$(this).app;
   app.db.openDoc(task_id, {
     success : function(doc) {
       doc.state = "done";

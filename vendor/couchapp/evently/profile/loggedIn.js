@@ -5,10 +5,10 @@ function(e, r) {
   var proid = "couch.app.profile:"+userCtx.name, 
     widget = $(this);
 
-  $(widget).data("app").db.openDoc(proid, {
+  $$(widget).app.db.openDoc(proid, {
     success : function(doc) {
       // todo decide if this is better than passing around
-      $(widget).data("profile", doc);
+      $$(widget).profile = doc;
       widget.trigger("profileReady", [doc]);
     },
     error : function() {
