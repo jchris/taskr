@@ -1,15 +1,7 @@
 $.couch.app(function(app) {
   // now we need to do magic to make more kinds of task displays
   // recent tags mentions users
-  var tasks = app.ddoc.evently.tasks;
-  // todo make a declarative trigger for this pattern
-  tasks.tags = $.extend(true, {}, tasks.recent, tasks.tags);
-  tasks.mentions = $.extend(true, {}, tasks.recent, tasks.mentions);
-  tasks.users = $.extend(true, {}, tasks.recent, tasks.users);
-  
-  $.log(tasks)
-  $("#tasks").evently(tasks, app);
-  $.pathbinder.begin("/");
+
 
   // var reply = {
   //   _init: {

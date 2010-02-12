@@ -24,6 +24,17 @@ $.couch.app(function(app) {
   
   // trigger the profile widget's events corresponding to the account widget
   $.evently.connect($("#account"), $("#profile"), ["loggedIn", "loggedOut"]);
+  
+  // now set up the main list of tasks
+  var tasks = app.ddoc.evently.tasks;
+  // todo make a declarative trigger for this pattern
+  tasks.tags = $.extend(true, {}, tasks.recent, tasks.tags);
+  tasks.mentions = $.extend(true, {}, tasks.recent, tasks.mentions);
+  tasks.users = $.extend(true, {}, tasks.recent, tasks.users);
+  
+  $.log(tasks)
+  $("#tasks").evently(tasks, app);
+  $.pathbinder.begin("/");
 });
 
 $.log = function() {
