@@ -27,7 +27,7 @@ $.couch.app(function(app) {
 });
 
 $.log = function() {
-  console.log(arguments);
+  // console.log(arguments);
 };
 
 // todo move to a plugin somewhere

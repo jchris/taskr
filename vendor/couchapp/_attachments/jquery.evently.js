@@ -59,11 +59,14 @@ function $$(node) {
 
   $.evently = {
     connect : function(source, target, events) {
-      events.forEach(function(e) {
-        source.bind(e, function() {
+      events.forEach(function(ev) {
+        source.bind(ev, function() {
           var args = $.makeArray(arguments);
+          // remove the original event to keep from stacking args extra deep
+          // it would be nice if jquery had a way to pass the original
+          // event to the trigger method.
           args.shift();
-          target.trigger(e, args);
+          target.trigger(ev, args);
           return false;
         });
       });
@@ -72,18 +75,18 @@ function $$(node) {
     changesDBs : {}
   };
   
-  $.fn.evently = function(events, app, init_args) {
+  $.fn.evently = function(events, app, args) {
     var elem = $(this);
     // store the app on the element for later use
     $$(elem).app = app;
 
     // setup the handlers onto elem
     forIn(events, function(name, h) {
-      eventlyHandler(elem, name, h);
+      eventlyHandler(elem, name, h, args);
     });
     
     if (events._init) {
-      elem.trigger("_init");
+      elem.trigger("_init", args);
     }
     
     if (app && events._changes) {
@@ -97,31 +100,31 @@ function $$(node) {
   
   // eventlyHandler applies the user's handler (h) to the 
   // elem, bound to trigger based on name.
-  function eventlyHandler(elem, name, h) {
+  function eventlyHandler(elem, name, h, args) {
     if (h.path) {
       elem.pathbinder(name, h.path);
     }
     var f = funViaString(h);
     if (typeof f == "function") {
-      elem.bind(name, f); 
+      elem.bind(name,  {args:args}, f); 
     } else if (typeof f == "string") {
-      elem.bind(name, function() {
+      elem.bind(name, {args:args}, function() {
         $(this).trigger(f, arguments);
         return false;
       });
     } else if ($.isArray(h)) { 
       // handle arrays recursively
       for (var i=0; i < h.length; i++) {
-        eventlyHandler(elem, name, h[i]);
+        eventlyHandler(elem, name, h[i], args);
       };
     } else {
       // an object is using the evently / mustache template system
       if (h.fun) {
-        elem.bind(name, funViaString(h.fun));
+        elem.bind(name, {args:args}, funViaString(h.fun));
       }
       // templates, selectors, etc are intepreted
       // when our named event is triggered.
-      elem.bind(name, function() {
+      elem.bind(name, {args:args}, function() {
         renderElement($(this), h, arguments);
       });
     }
