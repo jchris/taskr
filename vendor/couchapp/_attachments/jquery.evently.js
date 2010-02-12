@@ -141,7 +141,6 @@ function $$(node) {
   // this would be easy if there is a simple way to get at the element we just appended
   // (as html) so that we can attache the selectors
   function renderElement(me, h, args, qrun) {
-    
     // if there's a query object we run the query,
     // and then call the data function with the response.
     if (h.query && !qrun) {
@@ -151,17 +150,22 @@ function $$(node) {
       // $.log("renderElement")
       // $.log(me, h, args, qrun)
       // otherwise we just render the template with the current args
+      var selectors = runIfFun(me, h.selectors, args);
+      var act = h.render || "replace";
+      var app = $$(me).app;
       if (h.mustache) {
         var newElem = mustachioed(me, h, args);
-        // $.log("mus",newElem)
-        var act = h.render || "replace";
+        // $.log("mus", newElem);
         me[act](newElem);
       }
-      var selectors = runIfFun(me, h.selectors, args);
       if (selectors) {
-        var app = $$(me).app;
+        if (act == "replace") {
+          var s = me;
+        } else {
+          var s = newElem;
+        }
         forIn(selectors, function(selector, handlers) {
-          $(selector, me).evently(handlers, app, args);
+          $(selector, s).evently(handlers, app, args);
         });
       }
       if (h.after) {
@@ -194,13 +198,13 @@ function $$(node) {
     
     if (qType == "newRows") {
       q.success = function(resp) {
-        $.log("runQuery newRows success", resp)
+        $.log("runQuery newRows success", resp.rows.length, me, resp)
         resp.rows.reverse().forEach(function(row) {
           renderElement(me, h, [row], true)
         });
         userSuccess && userSuccess(resp);
       };
-      newRows(app, viewName, q);
+      newRows(me, app, viewName, q);
     } else {
       q.success = function(resp) {
         // $.log("runQuery success", resp)
@@ -212,22 +216,24 @@ function $$(node) {
   }
   
   // this is for the items handler
-  var lastViewId, highKey, inFlight;
-  function newRows(app, view, opts) {
+  // var lastViewId, highKey, inFlight;
+  // this needs to key per elem
+  function newRows(elem, app, view, opts) {
     // $.log("newRows", arguments);
     // on success we'll set the top key
     var thisViewId, successCallback = opts.success, full = false;
     function successFun(resp) {
       // $.log("newRows success", resp)
-      inFlight = false;
+      $$(elem).inFlight = false;
+      var JSONhighKey = JSON.stringify($$(elem).highKey)
       resp.rows = resp.rows.filter(function(r) {
-        return JSON.stringify(r.key) != JSON.stringify(highKey);
+        return JSON.stringify(r.key) != JSONhighKey;
       });
       if (resp.rows.length > 0) {
         if (opts.descending) {
-          highKey = resp.rows[0].key;
+          $$(elem).highKey = resp.rows[0].key;
         } else {
-          highKey = resp.rows[resp.rows.length -1].key;
+          $$(elem).highKey = resp.rows[resp.rows.length -1].key;
         }
       };
       if (successCallback) successCallback(resp, full);
@@ -241,26 +247,29 @@ function $$(node) {
     }
     // $.log(["thisViewId",thisViewId])
     // for query we'll set keys
-    if (thisViewId == lastViewId) {
+    if (thisViewId == $$(elem).lastViewId) {
       // we only want the rows newer than changesKey
-      if (opts.descending) {
-        opts.endkey = highKey;
-        // opts.inclusive_end = false;
-      } else {
-        opts.startkey = highKey;
+      var hk = $$(elem).highKey;
+      if (hk !== undefined) {
+        if (opts.descending) {
+          opts.endkey = hk;
+          // opts.inclusive_end = false;
+        } else {
+          opts.startkey = hk;
+        }
       }
       // $.log("add view rows", opts)
-      if (!inFlight) {
-        inFlight = true;
+      if (!$$(elem).inFlight) {
+        $$(elem).inFlight = true;
         app.view(view, opts);
       }
     } else {
       // full refresh
       // $.log("new view stuff")
       full = true;
-      lastViewId = thisViewId;
-      highKey = undefined;
-      inFlight = true;
+      $$(elem).lastViewId = thisViewId;
+      $$(elem).highKey = undefined;
+      $$(elem).inFlight = true;
       app.view(view, opts);
     }
   };
