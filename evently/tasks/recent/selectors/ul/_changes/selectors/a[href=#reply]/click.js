@@ -1,5 +1,6 @@
 function() {
   var li = $(this).parents("li");
-  $("div.reply",li).evently(reply);
+  var app = $$(this).app;
+  $("div.replies",li).evently(app.ddoc.evently.replies, app);
   return false;
 }
