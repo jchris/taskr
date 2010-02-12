@@ -91,6 +91,7 @@ function $$(node) {
     
     if (app && events._changes) {
       $("body").bind("evently.changes."+app.db.name, function() {
+        $.log('changes', elem)
         elem.trigger("_changes");        
       });
       followChanges(app);
@@ -286,7 +287,11 @@ function $$(node) {
       c_xhr.open("GET", app.db.uri+"_changes?feed=continuous&since="+db_info.update_seq, true);
       c_xhr.send("");
       // todo use a timeout to prevent rapid triggers
-      c_xhr.onreadystatechange = fun;
+      var t;
+      c_xhr.onreadystatechange = function() {
+        clearTimeout(t);
+        t = setTimeout(fun, 100);
+      };
       setTimeout(function() {
         resetHXR(c_xhr);      
       }, 1000 * 60);

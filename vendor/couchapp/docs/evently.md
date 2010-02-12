@@ -61,7 +61,22 @@ When we let CouchApp package our evently apps we get to work on them in individu
 
 Let's do a little Ajax. We'll just load the version of the CouchDB instance we happen to be serving our HTML from:
 
-
+    $("#couch").evently({
+      _init : function() {
+        var widget = $(this);
+        $.ajax('/', {
+          success : function(resp) {
+            widget.trigger("version",[resp]);
+          }
+        })
+      },
+      version : {
+        mustache : "<p>CouchDB at {{version}}</p>",
+        data : function(e, resp) {
+          return resp;
+        };
+      }
+    });
 
 -- triggering other events
   -- selectors
