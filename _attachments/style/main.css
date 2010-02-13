@@ -86,7 +86,7 @@ div#profile {
   padding-bottom:0;
 }
 
-#tasks li .react a {
+#tasks li .react a, #tasks li .react span {
   color:#fff;
   padding:0 4px;
   font-size:0.78em;
