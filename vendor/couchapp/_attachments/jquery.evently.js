@@ -1,12 +1,4 @@
-// thanks @wycats: http://yehudakatz.com/2009/04/20/evented-programming-with-jquery/
-// var $$ = function(param) {
-//   var node = $(param)[0];
-//   var id = $.data(node);
-//   $.cache[id] = $.cache[id] || {};
-//   $.cache[id].node = node;
-//   return $.cache[id];
-// };
-
+// $$ inspired by @wycats: http://yehudakatz.com/2009/04/20/evented-programming-with-jquery/
 function $$(node) {
   var data = $(node).data("$$");
   if (data) {
@@ -284,7 +276,6 @@ function $$(node) {
       $.evently.changesDBs[dbName] = true;
     }
   }
-  
   
   function connectToChanges(app, fun) {
     function resetHXR(x) {

@@ -1,7 +1,11 @@
 function(doc) {
   if (doc.type == "task" && doc.state != "done") {
+    var words = {};
     doc.body.replace(/\@([\w\-]+)/g, function(tag, word) {
-      emit([word.toLowerCase(), doc.created_at], doc)
+      words[word.toLowerCase()] = true;
     });
+    for (var w in words) {
+      emit([w, doc.created_at], doc);
+    }
   }
 }
