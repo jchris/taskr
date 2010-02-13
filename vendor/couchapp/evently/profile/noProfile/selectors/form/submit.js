@@ -12,6 +12,7 @@ function() {
     email : $("input[name=email]",this).val(),
     url : $("input[name=url]",this).val()
   }, widget = $(this);
+  var app = $$(widget).app;
 
   // setup gravatar_url
   if (typeof hex_md5 == "undefined") {
@@ -21,14 +22,14 @@ function() {
 
   newProfile.gravatar_url = 'http://www.gravatar.com/avatar/'+hex_md5(newProfile.email || newProfile.rand)+'.jpg?s=40&d=identicon';
 
-  $$(widget).app.db.saveDoc(newProfile, {
+  app.db.saveDoc(newProfile, {
     success : function() {
-      $$(widget).app.db.openDoc(proid, {
+      app.db.openDoc(proid, {
         success : function(doc) {
           widget.trigger("profileReady", [doc]);
         }
       });
     }
   });
-
+  return false;
 }
