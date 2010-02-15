@@ -41,3 +41,7 @@ pre {
   margin:4px;
   position:absolute;
 }
+
+textarea.code {
+  width:100%;
+}
