@@ -3,11 +3,10 @@ function() {
   var self = $(this);
   setTimeout(function() {
     var s = $("#sidebar");
-    s.empty();
     $("pre", self).each(function() {
       var code = $(this);
       var js = code.text();
-      var o = code.offset();
+      var o = s.offset();
       var r = js.match(/\$\(\"\#(.*)\"\)\.evently/);
       if (r) {
         // $.log(o)
@@ -21,11 +20,10 @@ function() {
           }
         });
         example.offset({
-          top: o.top
+          left: o.left
         });
-        example.hide();
-        s.append(example);
-        example.show("slow")
+        example.width(s.width()*0.75);
+        code.before(example);
       }
     });    
   }, 10);
