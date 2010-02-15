@@ -1,0 +1,1 @@
+# Docs for $.couch.app.js
