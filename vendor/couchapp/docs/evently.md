@@ -27,22 +27,27 @@ JavaScript:
 
 You can also do some more interesting things:
 
-    $("#hello").evently({
+    $("#heyjane").evently({
       _init : {
         mustache : '<p>Hello <a href="#jane">Jane</a>, <a href="#joan">Joan</a> (pick one)</p>',
         selectors : {
           'a[href=#joan]' : {
-            mustache : '<p>Hello Joan!</p>'
+            click : 'hiJoan'
           },
           'a[href=#jane]' : {
-            mustache : "<p>Darn, it's Jane...</p>",
-            after : function() {
-              var hello = $(this);
-              setTimeout(function() {
-                hello.trigger("janeRocks")
-              }, 5000);
-            };
-          },
+            click : 'hiJane'
+          }
+        }
+      },
+      hiJoan : {
+        mustache : '<p>Hello Joan!</p>'
+      },
+      hiJane : {
+        mustache : "<p>Darn, it's Jane...</p>",
+        after : function() {
+          setTimeout(function() {
+            $("#heyjane").trigger("janeRocks");
+          }, 5000);
         }
       },
       janeRocks : {
@@ -61,20 +66,25 @@ When we let CouchApp package our evently apps we get to work on them in individu
 
 Let's do a little Ajax. We'll just load the version of the CouchDB instance we happen to be serving our HTML from:
 
-    $("#couch").evently({
-      _init : function() {
-        var widget = $(this);
-        $.ajax('/', {
-          success : function(resp) {
-            widget.trigger("version",[resp]);
-          }
-        })
+    $("#ajax").evently({
+      _init : {
+        mustache : '<p>Loading CouchDB server info.</p>',
+        after : function() {
+          var widget = $(this);
+          $.ajax({
+            url : '/',
+            complete : function(req) {
+              var resp = $.httpData(req, "json");
+              widget.trigger("version", [resp]);
+            }
+          })
+        }
       },
       version : {
-        mustache : "<p>CouchDB at {{version}}</p>",
+        mustache : "<p>Running CouchDB version {{version}}</p>",
         data : function(e, resp) {
           return resp;
-        };
+        }
       }
     });
 

@@ -21,19 +21,20 @@ function $$(node) {
       }
     }
   };
-
+  $.forIn = forIn;
   function funViaString(fun) {
     if (fun && fun.match && fun.match(/function/)) {
       eval("var f = "+fun);
       if (typeof f == "function") {
         return function() {
           try {
-            return f.apply(this, arguments)
+            return f.apply(this, arguments);
           } catch(e) {
+            // IF YOU SEE AN ERROR HERE IT HAPPENED WHEN WE TRIED TO RUN YOUR FUNCTION
             // $.log({"message": "Error in evently function.", "error": e, "src" : fun});
-            throw(e)
+            throw(e);
           }
-        }
+        };
       }
     }
     return fun;
@@ -83,7 +84,7 @@ function $$(node) {
     
     if (app && events._changes) {
       $("body").bind("evently.changes."+app.db.name, function() {
-        $.log('changes', elem)
+        $.log('changes', elem);
         elem.trigger("_changes");        
       });
       followChanges(app);
@@ -109,7 +110,7 @@ function $$(node) {
       // handle arrays recursively
       for (var i=0; i < h.length; i++) {
         eventlyHandler(elem, name, h[i], args);
-      };
+      }
     } else {
       // an object is using the evently / mustache template system
       if (h.fun) {
@@ -147,7 +148,6 @@ function $$(node) {
       var app = $$(me).app;
       if (h.mustache) {
         var newElem = mustachioed(me, h, args);
-        // $.log("mus", newElem);
         me[act](newElem);
       }
       if (selectors) {
@@ -194,7 +194,7 @@ function $$(node) {
         resp.rows.reverse().forEach(function(row) {
           renderElement(me, h, [row], true)
         });
-        userSuccess && userSuccess(resp);
+        if (userSuccess) userSuccess(resp);
       };
       newRows(me, app, viewName, q);
     } else {
@@ -217,7 +217,7 @@ function $$(node) {
     function successFun(resp) {
       // $.log("newRows success", resp)
       $$(elem).inFlight = false;
-      var JSONhighKey = JSON.stringify($$(elem).highKey)
+      var JSONhighKey = JSON.stringify($$(elem).highKey);
       resp.rows = resp.rows.filter(function(r) {
         return JSON.stringify(r.key) != JSONhighKey;
       });
@@ -228,7 +228,7 @@ function $$(node) {
           $$(elem).highKey = resp.rows[resp.rows.length -1].key;
         }
       };
-      if (successCallback) successCallback(resp, full);
+      if (successCallback) {successCallback(resp, full)};
     };
     opts.success = successFun;
     

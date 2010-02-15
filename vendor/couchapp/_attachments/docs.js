@@ -4,5 +4,5 @@ $.log = function() {
 
 $.couch.app(function(app) {
   $("#docs").evently(app.ddoc.vendor.couchapp.evently.docs, app);
-  $("#docs").trigger("index");
+  $.pathbinder.begin("/");
 });
