@@ -16,8 +16,9 @@ function() {
         $("a.run", example).click(function(e) {
           e.preventDefault();
           var jc = $("#code-"+id);
-          $.log(jc)
+          // $.log(jc)
           var js = $('textarea',jc).val() || jc.text();
+          $('#'+id).unbind();
           try {
             eval(js);            
           } catch (e) {
@@ -31,9 +32,9 @@ function() {
         code.before(example);
       }
       // setup the editor
-      var edit = $('<a href="#edit">edit code</a>');
+      var edit = $('<a class="edit" href="#edit">edit code</a>');
       edit.click(function() {
-        var code = $(this).next('pre');
+        var code = $(this).prev('pre');
         var js = code.text();
         var lines = js.split('\n').length;
         var ta = $('<textarea rows="'+lines+'" class="code"></textarea>');
@@ -41,7 +42,7 @@ function() {
         code.replace(ta);
         return false;
       });
-      code.before(edit);
+      code.after(edit);
     });    
   }, 10);
 };

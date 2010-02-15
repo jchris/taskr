@@ -8,12 +8,6 @@ Evently has special handlers for CouchDB views and `_changes` feeds, and could b
 
 At it's simplest an Evently widget is a set of events connected to a single DOM element.
 
-HTML:
-
-    <body>
-      <div id="hello"></div>
-    </body>
-
 JavaScript:
 
     $("#hello").evently({
@@ -46,12 +40,14 @@ You can also do some more interesting things:
         mustache : "<p>Darn, it's Jane...</p>",
         after : function() {
           setTimeout(function() {
+            // automatically trigger the "janeRocks" event after 2 seconds.
             $("#heyjane").trigger("janeRocks");
           }, 2000);
         }
       },
       janeRocks : {
-        mustache : "<p>Actually Jane is awesome.</p>",        
+        render : "append",
+        mustache : "<p>Actually Jane is awesome.</p>"
       }
     });
 

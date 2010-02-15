@@ -27,6 +27,7 @@ pre {
   float:right;
   width:34%;
 }
+
 #docs {
   -moz-box-shadow:0 0 2em #000;
   -webkit-box-shadow:0 0 2em #000;
@@ -44,4 +45,9 @@ pre {
 
 textarea.code {
   width:100%;
+}
+
+.edit {
+  float:right;
+  font-size:0.8em;
 }
