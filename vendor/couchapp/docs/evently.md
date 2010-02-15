@@ -47,7 +47,7 @@ You can also do some more interesting things:
         after : function() {
           setTimeout(function() {
             $("#heyjane").trigger("janeRocks");
-          }, 5000);
+          }, 2000);
         }
       },
       janeRocks : {

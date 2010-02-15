@@ -28,8 +28,15 @@ pre {
   width:34%;
 }
 #docs {
-  -moz-box-shadow:0 0 2em;
+  -moz-box-shadow:0 0 2em #000;
+  -webkit-box-shadow:0 0 2em #000;
   width:58%;
   padding:8px;
+  margin:4px;
+}
+
+.example {
+  background:#ffd;
+  padding:4px;
   margin:4px;
 }

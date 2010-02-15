@@ -1,4 +1,4 @@
-# Docs for $.couch.app.js
+# Docs for $.couch.app
 
 The simplest use of CouchApp in the browser is to get access to information about the database you are running in.
 
