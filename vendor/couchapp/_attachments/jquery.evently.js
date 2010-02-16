@@ -79,6 +79,7 @@ function $$(node) {
     });
     
     if (events._init) {
+      $.log("ev _init", elem);
       elem.trigger("_init", args);
     }
     
@@ -120,6 +121,7 @@ function $$(node) {
       // when our named event is triggered.
       elem.bind(name, {args:args}, function() {
         renderElement($(this), h, arguments);
+        return false;
       });
     }
   };
@@ -157,7 +159,10 @@ function $$(node) {
           var s = newElem;
         }
         forIn(selectors, function(selector, handlers) {
+          // $.log("selector", selector);
+          // $.log("selected", $(selector, s));
           $(selector, s).evently(handlers, app, args);
+          // $.log("applied", selector);
         });
       }
       if (h.after) {
