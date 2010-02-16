@@ -5,7 +5,7 @@ The simplest use of CouchApp in the browser is to get access to information abou
     $.couch.app(function(app) {
       $("#dbinfo").evently({
         _init : {
-          mustache : '<p>The db name is {{name}}</p>',
+          mustache : '<p>The db name is <strong>{{name}}</strong></p>',
           data : app.db
         }
       });
