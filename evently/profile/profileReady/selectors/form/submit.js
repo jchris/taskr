@@ -1,5 +1,5 @@
 function() {
-  var profile = $$($(this).parents("#profile")).profile;
+  var profile = $$("#profile").profile;
   // $.log("profile", profile, this);
   var texta = $("textarea[name=body]", this);
   var newTask = {
