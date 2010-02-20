@@ -37,10 +37,6 @@ $.couch.app(function(app) {
   $.pathbinder.begin("/");
 });
 
-$.log = function() {
-  // console.log(arguments);
-};
-
 // todo move to a plugin somewhere
 // copied to toast's $.couch.app.utils
 $.linkify = function(body) {
