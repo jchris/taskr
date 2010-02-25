@@ -3,7 +3,7 @@ function(resp) {
     return {
       user : r.key,
       user_uri : encodeURIComponent(r.key),
-      count : r.value * 10
+      count : (r.value * 4) + 10
     }
   });
   return {users:users};
