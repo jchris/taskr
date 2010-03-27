@@ -12,6 +12,11 @@ h2 {
   color:#222;
 }
 
+#current-path {
+  font-weight:normal;
+  color:#555;
+}
+
 #header {
   padding:4px;
 }

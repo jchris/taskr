@@ -17,6 +17,7 @@
   }
   
   $.pathbinder = {
+    changeFuns : [],
     paths : [],
     begin : function(defaultPath) {
       // this should trigger the defaultPath if there's not a path in the URL
@@ -31,9 +32,15 @@
         }
       })
     },
-    go : function(path) {
+    go : function (path) {
       goPath(path);          
       triggerOnPath(path);
+    },
+    onChange : function (fun) {
+      $.pathbinder.changeFuns.push(fun);
+    },
+    changed : function(path) {
+      $.pathbinder.changeFuns.forEach(function(fun) {fun(path)});
     }
   };
 
@@ -55,6 +62,7 @@
   }
 
   function triggerOnPath(path) {
+    $.pathbinder.changed(path);
     var pathSpec, path_params, params = {};
     for (var i=0; i < $.pathbinder.paths.length; i++) {
       pathSpec = $.pathbinder.paths[i];

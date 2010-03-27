@@ -34,6 +34,9 @@ $.couch.app(function(app) {
   
   $.log(tasks)
   $("#tasks").evently(tasks, app);
+  $.pathbinder.onChange(function(path) {
+    $("#current-path").text(path);
+  });
   $.pathbinder.begin("/");
 });
 
