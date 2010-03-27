@@ -4,7 +4,7 @@ function(resp) {
       tag : r.key,
       // todo use a new mustache delimiter for this
       tag_uri : encodeURIComponent(r.key),
-      count : (r.value * 4) + 10
+      size : (r.value * 4) + 10
     };
   });
   return {tags:tags};
