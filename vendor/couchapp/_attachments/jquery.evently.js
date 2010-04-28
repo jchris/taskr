@@ -53,13 +53,13 @@ function $$(node) {
   $.evently = {
     connect : function(source, target, events) {
       events.forEach(function(ev) {
-        source.bind(ev, function() {
+        $(source).bind(ev, function() {
           var args = $.makeArray(arguments);
           // remove the original event to keep from stacking args extra deep
           // it would be nice if jquery had a way to pass the original
           // event to the trigger method.
           args.shift();
-          target.trigger(ev, args);
+          $(target).trigger(ev, args);
           return false;
         });
       });
@@ -68,12 +68,34 @@ function $$(node) {
     changesDBs : {}
   };
   
+  function extractFrom(name, evs) {
+    return evs[name];
+  };
+  
+  function extractEvents(name, ddoc) {
+    // extract events from ddoc.evently and ddoc.vendor.*.evently
+    var events = [true, {}];
+    $.forIn(ddoc.vendor, function(k, v) {
+      if (v.evently && v.evently[name]) {
+        events.push(v.evently[name]);
+      }
+    });
+    if (ddoc.evently[name]) {events.push(ddoc.evently[name]);}
+    return $.extend.apply(null, events);
+  }
+  
   $.fn.evently = function(events, app, args) {
     var elem = $(this);
     // store the app on the element for later use
     if (app) {
       $$(elem).app = app;      
     }
+    
+    if (typeof events == "string") {
+      events = extractEvents(events, app.ddoc);
+      $.log(events)
+    }
+    
     $$(elem).evently = events;
     // setup the handlers onto elem
     forIn(events, function(name, h) {
