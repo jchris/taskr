@@ -71,7 +71,7 @@ function $$(node) {
   function extractFrom(name, evs) {
     return evs[name];
   };
-  
+
   function extractEvents(name, ddoc) {
     // extract events from ddoc.evently and ddoc.vendor.*.evently
     var events = [true, {}];
@@ -83,19 +83,18 @@ function $$(node) {
     if (ddoc.evently[name]) {events.push(ddoc.evently[name]);}
     return $.extend.apply(null, events);
   }
-  
+
   $.fn.evently = function(events, app, args) {
     var elem = $(this);
     // store the app on the element for later use
     if (app) {
       $$(elem).app = app;      
     }
-    
+
     if (typeof events == "string") {
       events = extractEvents(events, app.ddoc);
-      $.log(events)
     }
-    
+
     $$(elem).evently = events;
     // setup the handlers onto elem
     forIn(events, function(name, h) {
