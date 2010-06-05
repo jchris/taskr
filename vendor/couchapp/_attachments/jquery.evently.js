@@ -23,7 +23,7 @@ function $$(node) {
   };
   $.forIn = forIn;
   function funViaString(fun) {
-    if (fun && fun.match && fun.match(/function/)) {
+    if (fun && fun.match && fun.match(/^function/)) {
       eval("var f = "+fun);
       if (typeof f == "function") {
         return function() {
@@ -102,7 +102,7 @@ function $$(node) {
     });
     
     if (events._init) {
-      $.log("ev _init", elem);
+      // $.log("ev _init", elem);
       elem.trigger("_init", args);
     }
     
@@ -110,7 +110,7 @@ function $$(node) {
       $("body").bind("evently.changes."+app.db.name, function() {
         // we want to unbind this function when the element is deleted.
         // maybe jquery 1.4.2 has this covered?
-        $.log('changes', elem);
+        // $.log('changes', elem);
         elem.trigger("_changes");        
       });
       followChanges(app);
@@ -152,7 +152,7 @@ function $$(node) {
   };
   
   $.fn.replace = function(elem) {
-    $.log("Replace", this)
+    // $.log("Replace", this)
     $(this).empty().append(elem);
   };
   
@@ -164,6 +164,9 @@ function $$(node) {
   function renderElement(me, h, args, qrun, arun) {
     // if there's a query object we run the query,
     // and then call the data function with the response.
+    if (h.before && (!qrun || !arun)) {
+      funViaString(h.before).apply(me, args);
+    }
     if (h.async && !arun) {
       runAsync(me, h, args)
     } else if (h.query && !qrun) {
@@ -174,10 +177,10 @@ function $$(node) {
       // $.log(me, h, args, qrun)
       // otherwise we just render the template with the current args
       var selectors = runIfFun(me, h.selectors, args);
-      var act = h.render || "replace";
+      var act = (h.render || "replace").replace(/\s/g,"");
       var app = $$(me).app;
       if (h.mustache) {
-        $.log("rendering", h.mustache)
+        // $.log("rendering", h.mustache)
         var newElem = mustachioed(me, h, args);
         me[act](newElem);
       }
@@ -195,7 +198,8 @@ function $$(node) {
         });
       }
       if (h.after) {
-        funViaString(h.after).apply(me, args);
+        runIfFun(me, h.after, args);
+        // funViaString(h.after).apply(me, args);
       }
     }    
   };
@@ -233,7 +237,7 @@ function $$(node) {
     
     if (qType == "newRows") {
       q.success = function(resp) {
-        $.log("runQuery newRows success", resp.rows.length, me, resp)
+        // $.log("runQuery newRows success", resp.rows.length, me, resp)
         resp.rows.reverse().forEach(function(row) {
           renderElement(me, h, [row].concat($.argsToArray(args)), true)
         });
@@ -246,7 +250,7 @@ function $$(node) {
         renderElement(me, h, [resp].concat($.argsToArray(args)), true);
         userSuccess && userSuccess(resp);
       };
-      $.log(app)
+      // $.log(app)
       app.view(viewName, q);      
     }
   }
