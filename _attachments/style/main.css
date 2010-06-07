@@ -76,12 +76,12 @@ div#profile {
   width:80%;
 }
 
-#tasks li:hover {
+#tasks li {
   border: 1px solid #999;
   background-color:#aaa;
 }
 
-#tasks li.done, #tasks li.done:hover {
+#tasks li.done {
   background-color:#cfb;
   border: 1px solid #4b4;
 }
