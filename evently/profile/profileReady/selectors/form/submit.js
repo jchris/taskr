@@ -3,6 +3,7 @@ function() {
   // $.log("profile", profile, this);
   var texta = $("textarea[name=body]", this);
   var newTask = {
+    _id : Math.random().toString(),
     body : texta.val(),
     type : "task",
     created_at : new Date(),
