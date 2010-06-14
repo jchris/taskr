@@ -27,7 +27,6 @@ $.couch.app(function(app) {
   tasks.mentions = $.extend(true, {}, tasks.recent, tasks.mentions);
   tasks.users = $.extend(true, {}, tasks.recent, tasks.users);
   
-  $.log(tasks)
   $("#tasks").evently(tasks, app);
   $.pathbinder.onChange(function(path) {
     $("#current-path").text(path);
