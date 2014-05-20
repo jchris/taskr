@@ -14,6 +14,7 @@
     _currentPath = getPath();
     // if path is actually changed from what we thought it was, then react
     if (_lastPath != _currentPath) {
+      _lastPath = _currentPath;
       return triggerOnPath(_currentPath);
     }
   }
@@ -30,7 +31,7 @@
           triggerOnPath(loadPath);
         } else {
           goPath(defaultPath);          
-          triggerOnPath(defaultPath);
+          triggerOnPath(getPath());
         }
       })
     },
